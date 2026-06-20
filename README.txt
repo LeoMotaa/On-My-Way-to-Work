@@ -1,0 +1,1 @@
+Pygame and PPlay are required to run this game.
