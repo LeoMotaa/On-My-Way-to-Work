@@ -1,26 +1,34 @@
 # MAIN_OMW.py
+
+import os
+import sys
+
+pasta_lib = os.path.abspath(os.path.join(os.path.dirname(__file__), "lib"))
+if pasta_lib not in sys.path:
+    sys.path.insert(0, pasta_lib)
+
 from pplay.window import *
 from pplay.keyboard import *
 from pplay.mouse import *
-import config
+from lib.config import *
 import pygame 
 
 # Importação da arquitetura modular do jogo
-import MENU_OMW
-import Sel_Fases_OMW
-import GAMEPLAY_OMW
-import SELECAO_SKILLS_OMW
-import AUDIO_OMW
-import TELAS_FINAIS_OMW 
-import Rankings_OMW 
+from lib.MENU_OMW import*
+from lib.Sel_Fases_OMW import*
+from lib.GAMEPLAY_OMW import*
+from lib.SELECAO_SKILLS_OMW import*
+from lib.AUDIO_OMW import*
+from lib.TELAS_FINAIS_OMW import*
+from lib.Rankings_OMW import*
 
 # 1. INICIALIZAÇÃO
 janela = Window(config.LARGURA, config.ALTURA)
 janela.set_title("Oh My Word! - On My Way")
 
-MENU_OMW.inicializar_menu()
-GAMEPLAY_OMW.inicializar_jogo() 
-Sel_Fases_OMW.inicializar_fases()
+inicializar_menu()
+inicializar_jogo() 
+inicializar_fases()
 
 teclado = Keyboard()
 mouse = Mouse()
@@ -31,7 +39,7 @@ tela_anterior = "menu"
 
 # 2. LOOP PRINCIPAL DO JOGO
 while True:
-    AUDIO_OMW.atualizar_musica()
+    atualizar_musica()
     delta = janela.delta_time()
     if delta > 0.1: delta = 0.1
 
@@ -48,17 +56,17 @@ while True:
     if not mouse_pressionado_atual:
         config.pode_clicar = True
 
-     
-    if config.tela == "jogo" and tela_anterior in ["menu", "fases"]:
-        GAMEPLAY_OMW.inicializar_jogo()
+
+    if config.tela == "jogo" and tela_anterior in ["menu", "fases", "selecao_skills"]:
+        inicializar_jogo()
 
     tela_anterior = config.tela
 
     if config.tela == "menu":
-        MENU_OMW.rodar_menu(janela, clicou)
+        rodar_menu(janela, clicou)
 
     elif config.tela == "fases":
-        Sel_Fases_OMW.rodar_selecao_fases(janela, clicou)
+        rodar_selecao_fases(janela, clicou)
 
     elif config.tela == "ranking": 
         config.tela = Rankings_OMW.rodar_ranking(janela, teclado)
@@ -68,10 +76,10 @@ while True:
         if teclado.key_pressed("esc"):
             config.tela = "desistencia"
         else:
-            resultado = GAMEPLAY_OMW.rodar_gameplay(janela, teclado, delta)
+            resultado = rodar_gameplay(janela, teclado, delta)
             
             if resultado == "selecao_skills":
-                SELECAO_SKILLS_OMW.inicializar_selecao()
+                inicializar_selecao()
                 config.tela = "selecao_skills"
             elif resultado == "vitoria":
                 config.tela = "vitoria"
@@ -81,17 +89,17 @@ while True:
                 config.tela = resultado
 
     elif config.tela == "selecao_skills":
-        SELECAO_SKILLS_OMW.rodar_selecao_skills(janela, clicou)
+        rodar_selecao_skills(janela, clicou)
 
     #TELA NA MÁQUINA DE ESTADOS:
     elif config.tela == "desistencia":
-        config.tela = TELAS_FINAIS_OMW.rodar_desistencia(janela, teclado)
+        config.tela = rodar_desistencia(janela, teclado)
 
     elif config.tela == "vitoria":
-        config.tela = TELAS_FINAIS_OMW.rodar_vitoria(janela, teclado)
+        config.tela = rodar_vitoria(janela, teclado)
 
     elif config.tela == "gameover":
-        config.tela = TELAS_FINAIS_OMW.rodar_gameover(janela, teclado)
+        config.tela = rodar_gameover(janela, teclado)
 
     janela.update()
 
