@@ -1,0 +1,18 @@
+# Remove ambientes virtuais
+venv/
+env/
+
+# Remove cache do python
+__pycache__/
+
+# Remove pasta de testes
+sandbox/
+
+#Remove metatados do windows
+*Zone.Identifier*
+*:Zone.Identifier
+*.png:Zone.Identifier
+
+# Remove arquivo de save
+save_data.json
+*.json
